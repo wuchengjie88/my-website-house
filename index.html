@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>自建房 3D 方案模型</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="viewport" aria-label="3D 模型预览">
+        <canvas id="modelCanvas"></canvas>
+      </section>
+      <aside class="panel" aria-label="模型控制">
+        <h1>自建房 3D 方案模型</h1>
+        <p>现代风格四层自建房模型，露台为四楼室内面积挖空形成，外墙平整并搭配局部文化瓷砖。</p>
+
+        <div class="control-row">
+          <button id="resetView" type="button" title="重置视角">重置视角</button>
+          <button id="spinToggle" type="button" title="自动旋转">自动旋转</button>
+        </div>
+
+        <label class="toggle">
+          <input id="toggleBalcony" type="checkbox" checked />
+          <span>显示露台与栏杆</span>
+        </label>
+        <label class="toggle">
+          <input id="toggleColumns" type="checkbox" />
+          <span>显示框柱</span>
+        </label>
+        <label class="toggle">
+          <input id="toggleRoof" type="checkbox" checked />
+          <span>显示屋顶女儿墙</span>
+        </label>
+
+        <div class="swatches" aria-label="墙面颜色">
+          <button class="swatch active" data-wall="#eee8d8" style="--swatch:#eee8d8" title="米白外墙"></button>
+          <button class="swatch" data-wall="#f4f1e8" style="--swatch:#f4f1e8" title="浅白外墙"></button>
+          <button class="swatch" data-wall="#e5dfcf" style="--swatch:#e5dfcf" title="暖米外墙"></button>
+        </div>
+
+        <dl class="notes">
+          <div><dt>层数</dt><dd>4 层 + 屋顶小塔</dd></div>
+          <div><dt>尺寸</dt><dd>7.5m x 10.4m，主体高度 12.6m</dd></div>
+          <div><dt>露台</dt><dd>四楼室内挖空，约 12 平方米</dd></div>
+          <div><dt>风格</dt><dd>现代平屋顶、深色窗框、简洁墙面</dd></div>
+        </dl>
+      </aside>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
