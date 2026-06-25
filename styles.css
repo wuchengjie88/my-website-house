@@ -1,0 +1,159 @@
+:root {
+  color-scheme: light;
+  --ink: #151515;
+  --muted: #63635c;
+  --panel: rgba(255, 255, 255, 0.88);
+  --line: rgba(24, 24, 21, 0.14);
+  --accent: #2e5e62;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  overflow: hidden;
+  font-family: "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+  color: var(--ink);
+  background: #d9dedb;
+}
+
+.app-shell {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.viewport,
+#modelCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.panel {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: min(330px, calc(100vw - 36px));
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 60px rgba(20, 22, 20, 0.18);
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+button {
+  min-height: 38px;
+  border: 1px solid rgba(20, 20, 18, 0.16);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: rgba(20, 20, 18, 0.32);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  color: #2c2c28;
+  font-size: 14px;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.swatches {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0 14px;
+}
+
+.swatch {
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.swatch.active {
+  outline: 3px solid rgba(46, 94, 98, 0.28);
+  border-color: var(--accent);
+}
+
+.notes {
+  margin: 8px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.notes div {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 8px;
+  margin: 7px 0;
+  font-size: 13px;
+}
+
+dt {
+  color: var(--muted);
+}
+
+dd {
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .panel {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+    width: auto;
+    padding: 14px;
+  }
+
+  h1 {
+    font-size: 17px;
+  }
+
+  p,
+  .notes {
+    display: none;
+  }
+}
