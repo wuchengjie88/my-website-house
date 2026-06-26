@@ -445,8 +445,8 @@ function buildHouse() {
 
   addWindow(1.6, 4.9, -5.225, 1.42, 1.72, "front");
   addWindow(1.6, 8.05, -5.225, 1.42, 1.72, "front");
-  addWindow(-1.25, 11.2, -5.225, 0.82, 1.62, "front");
   addWindow(-2.75, 11.2, -5.225, 0.82, 1.62, "front");
+  addWindow(0.005, 11.2, -3.525, 0.82, 1.62, "right");
 
   for (const y of [1.65, 4.9, 8.05, 11.2]) {
     addSlimWindowPair(3.775, y, 2.55, "right");
