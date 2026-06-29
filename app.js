@@ -357,11 +357,13 @@ function addTerraceInnerParapet() {
   const h = 0.34;
   const backEdge = z + d / 2 - 0.12;
   const leftEdge = x - w / 2 + 0.12;
+  const innerReturnDepth = 1.05;
+  const innerReturnZ = backEdge - innerReturnDepth / 2 + 0.02;
 
   box("terrace inner parapet back", { x: w - 0.38, y: h, z: 0.24 }, { x, y, z: backEdge }, materials.wall, roofs);
   trimBox({ x: w - 0.2, y: 0.1, z: 0.12 }, { x, y: y + 0.23, z: backEdge + 0.04 }, roofs);
-  box("terrace inner parapet room side", { x: 0.24, y: h, z: d - 0.44 }, { x: leftEdge, y, z }, materials.wall, roofs);
-  trimBox({ x: 0.12, y: 0.1, z: d - 0.28 }, { x: leftEdge - 0.04, y: y + 0.23, z }, roofs);
+  box("terrace inner parapet return at notch", { x: 0.24, y: h, z: innerReturnDepth }, { x: leftEdge, y, z: innerReturnZ }, materials.wall, roofs);
+  trimBox({ x: 0.12, y: 0.1, z: innerReturnDepth + 0.12 }, { x: leftEdge - 0.04, y: y + 0.23, z: innerReturnZ }, roofs);
 }
 
 function addFourthFloorCarvedMass() {
