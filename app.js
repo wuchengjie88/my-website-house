@@ -81,8 +81,26 @@ function trimBox(size, position, parent = model) {
   return m;
 }
 
-function addParapet(width, depth, y, z, parent = roofs, frontGap = null, rightFrontGap = null) {
+function addParapet(width, depth, y, z, parent = roofs, frontGap = null, sideGap = null) {
   const h = 0.36;
+  const addSideSegments = (side, gap) => {
+    const sideMin = z - depth / 2 - 0.35;
+    const sideMax = z + depth / 2 + 0.35;
+    const gapMin = gap.z - gap.depth / 2;
+    const gapMax = gap.z + gap.depth / 2;
+    const frontPart = Math.max(0, gapMin - sideMin);
+    const rearPart = Math.max(0, sideMax - gapMax);
+    const sideX = side === "left" ? -width / 2 - 0.18 : width / 2 + 0.18;
+    const capX = side === "left" ? -width / 2 - 0.28 : width / 2 + 0.28;
+    if (frontPart > 0.05) {
+      trimBox({ x: 0.34, y: h, z: frontPart }, { x: sideX, y, z: sideMin + frontPart / 2 }, parent);
+      trimBox({ x: 0.22, y: 0.12, z: frontPart }, { x: capX, y: y + 0.27, z: sideMin + frontPart / 2 }, parent);
+    }
+    if (rearPart > 0.05) {
+      trimBox({ x: 0.34, y: h, z: rearPart }, { x: sideX, y, z: gapMax + rearPart / 2 }, parent);
+      trimBox({ x: 0.22, y: 0.12, z: rearPart }, { x: capX, y: y + 0.27, z: gapMax + rearPart / 2 }, parent);
+    }
+  };
   if (frontGap) {
     const frontMin = -width / 2 - 0.35;
     const frontMax = width / 2 + 0.35;
@@ -103,28 +121,19 @@ function addParapet(width, depth, y, z, parent = roofs, frontGap = null, rightFr
     trimBox({ x: width + 0.78, y: 0.12, z: 0.22 }, { x: 0, y: y + 0.27, z: z - depth / 2 - 0.28 }, parent);
   }
   trimBox({ x: width + 0.7, y: h, z: 0.34 }, { x: 0, y, z: z + depth / 2 + 0.18 }, parent);
-  trimBox({ x: 0.34, y: h, z: depth + 0.7 }, { x: -width / 2 - 0.18, y, z }, parent);
-  if (rightFrontGap) {
-    const sideMin = z - depth / 2 - 0.35;
-    const sideMax = z + depth / 2 + 0.35;
-    const gapMin = rightFrontGap.z - rightFrontGap.depth / 2;
-    const gapMax = rightFrontGap.z + rightFrontGap.depth / 2;
-    const frontPart = Math.max(0, gapMin - sideMin);
-    const rearPart = Math.max(0, sideMax - gapMax);
-    if (frontPart > 0.05) {
-      trimBox({ x: 0.34, y: h, z: frontPart }, { x: width / 2 + 0.18, y, z: sideMin + frontPart / 2 }, parent);
-      trimBox({ x: 0.22, y: 0.12, z: frontPart }, { x: width / 2 + 0.28, y: y + 0.27, z: sideMin + frontPart / 2 }, parent);
-    }
-    if (rearPart > 0.05) {
-      trimBox({ x: 0.34, y: h, z: rearPart }, { x: width / 2 + 0.18, y, z: gapMax + rearPart / 2 }, parent);
-      trimBox({ x: 0.22, y: 0.12, z: rearPart }, { x: width / 2 + 0.28, y: y + 0.27, z: gapMax + rearPart / 2 }, parent);
-    }
+  if (sideGap && sideGap.side === "left") {
+    addSideSegments("left", sideGap);
+  } else {
+    trimBox({ x: 0.34, y: h, z: depth + 0.7 }, { x: -width / 2 - 0.18, y, z }, parent);
+    trimBox({ x: 0.22, y: 0.12, z: depth + 0.78 }, { x: -width / 2 - 0.28, y: y + 0.27, z }, parent);
+  }
+  if (sideGap && sideGap.side === "right") {
+    addSideSegments("right", sideGap);
   } else {
     trimBox({ x: 0.34, y: h, z: depth + 0.7 }, { x: width / 2 + 0.18, y, z }, parent);
     trimBox({ x: 0.22, y: 0.12, z: depth + 0.78 }, { x: width / 2 + 0.28, y: y + 0.27, z }, parent);
   }
   trimBox({ x: width + 0.78, y: 0.12, z: 0.22 }, { x: 0, y: y + 0.27, z: z + depth / 2 + 0.28 }, parent);
-  trimBox({ x: 0.22, y: 0.12, z: depth + 0.78 }, { x: -width / 2 - 0.28, y: y + 0.27, z }, parent);
 }
 
 function addWindow(x, y, z, w, h, face = "front", parent = model) {
@@ -327,56 +336,56 @@ function addReferenceLoggiaStack() {
 }
 
 function addMiddleRoofTerrace() {
-  const x = 1.6;
+  const x = -1.6;
   const y = 9.5;
   const z = -3.525;
   const w = 3.6;
   const d = 3.35;
   const railH = 0.82;
   const frontEdge = z - d / 2 + 0.16;
-  const rightEdge = x + w / 2 - 0.16;
+  const leftEdge = x - w / 2 + 0.16;
 
   box("fourth floor carved terrace floor", { x: w - 0.5, y: 0.08, z: d - 0.48 }, { x, y: y + 0.05, z: z + 0.04 }, materials.step, balconies, false);
   box("fourth floor recessed waterproof floor", { x: w - 0.8, y: 0.035, z: d - 0.8 }, { x, y: y + 0.12, z: z + 0.08 }, materials.glass, balconies, false);
 
   box("fourth floor cutout glass guard front", { x: w - 0.52, y: railH, z: 0.06 }, { x, y: y + railH / 2, z: frontEdge }, materials.glass, balconies, false);
-  box("fourth floor cutout glass guard open side", { x: 0.06, y: railH, z: d - 0.44 }, { x: rightEdge, y: y + railH / 2, z: z + 0.04 }, materials.glass, balconies, false);
+  box("fourth floor cutout glass guard open side", { x: 0.06, y: railH, z: d - 0.44 }, { x: leftEdge, y: y + railH / 2, z: z + 0.04 }, materials.glass, balconies, false);
 
   trimBox({ x: w - 0.3, y: 0.1, z: 0.12 }, { x, y: y + railH + 0.06, z: frontEdge - 0.04 }, balconies);
-  trimBox({ x: 0.12, y: 0.1, z: d - 0.32 }, { x: rightEdge + 0.02, y: y + railH + 0.06, z: z + 0.04 }, balconies);
+  trimBox({ x: 0.12, y: 0.1, z: d - 0.32 }, { x: leftEdge - 0.02, y: y + railH + 0.06, z: z + 0.04 }, balconies);
 
   trimBox({ x: w - 0.18, y: 0.16, z: 0.2 }, { x, y: y - 0.08, z: frontEdge - 0.08 }, balconies);
 }
 
 function addTerraceInnerParapet() {
-  const x = 1.6;
+  const x = -1.6;
   const y = 12.85;
   const z = -3.525;
   const w = 3.6;
   const d = 3.35;
   const h = 0.34;
   const backEdge = z + d / 2 - 0.12;
-  const leftEdge = x - w / 2 + 0.12;
+  const rightEdge = x + w / 2 - 0.12;
   const innerReturnDepth = 1.05;
   const innerReturnZ = backEdge - innerReturnDepth / 2 + 0.02;
 
   box("terrace inner parapet back", { x: w - 0.38, y: h, z: 0.24 }, { x, y, z: backEdge }, materials.wall, roofs);
   trimBox({ x: w - 0.2, y: 0.1, z: 0.12 }, { x, y: y + 0.23, z: backEdge + 0.04 }, roofs);
-  box("terrace inner parapet return at notch", { x: 0.24, y: h, z: innerReturnDepth }, { x: leftEdge, y, z: innerReturnZ }, materials.wall, roofs);
-  trimBox({ x: 0.12, y: 0.1, z: innerReturnDepth + 0.12 }, { x: leftEdge - 0.04, y: y + 0.23, z: innerReturnZ }, roofs);
+  box("terrace inner parapet return at notch", { x: 0.24, y: h, z: innerReturnDepth }, { x: rightEdge, y, z: innerReturnZ }, materials.wall, roofs);
+  trimBox({ x: 0.12, y: 0.1, z: innerReturnDepth + 0.12 }, { x: rightEdge + 0.04, y: y + 0.23, z: innerReturnZ }, roofs);
 }
 
 function addFourthFloorCarvedMass() {
   const cy = 11.025;
   const h = 3.15;
   box("fourth floor rear mass after terrace cut", { x: 7.5, y: h, z: 7.05 }, { x: 0, y: cy, z: 1.675 }, materials.wall);
-  box("fourth floor west room mass beside terrace", { x: 3.3, y: h, z: 3.35 }, { x: -2.1, y: cy, z: -3.525 }, materials.wall);
-  box("fourth floor room wall beside carved terrace", { x: 0.28, y: h, z: 3.35 }, { x: -0.15, y: cy, z: -3.525 }, materials.wall);
+  box("fourth floor west room mass beside terrace", { x: 3.3, y: h, z: 3.35 }, { x: 2.1, y: cy, z: -3.525 }, materials.wall);
+  box("fourth floor room wall beside carved terrace", { x: 0.28, y: h, z: 3.35 }, { x: 0.15, y: cy, z: -3.525 }, materials.wall);
 }
 
 function addRoofDeck() {
   box("rear flat roof surface", { x: 7.0, y: 0.08, z: 7.05 }, { x: 0, y: 12.66, z: 1.675 }, materials.step, roofs, false);
-  box("west front roof surface beside terrace", { x: 3.3, y: 0.08, z: 3.35 }, { x: -2.1, y: 12.66, z: -3.525 }, materials.step, roofs, false);
+  box("west front roof surface beside terrace", { x: 3.3, y: 0.08, z: 3.35 }, { x: 2.1, y: 12.66, z: -3.525 }, materials.step, roofs, false);
   box("roof access door glass", { x: 0.08, y: 1.35, z: 0.78 }, { x: 0.98, y: 13.45, z: 1.0 }, materials.glass, roofs);
   box("roof door frame", { x: 0.12, y: 1.55, z: 0.95 }, { x: 0.94, y: 13.45, z: 1.0 }, materials.trim, roofs);
 }
@@ -401,12 +410,12 @@ function buildHouse() {
       box("dark pilaster foot", { x: 0.72, y: 0.32, z: 0.72 }, { x, y: 0.78, z }, materials.concrete, columns);
     }
   }
-  addParapet(7.5, 10.4, 12.85, 0, roofs, { x: 1.6, width: 3.6 }, { z: -3.525, depth: 3.35 });
+  addParapet(7.5, 10.4, 12.85, 0, roofs, { x: -1.6, width: 3.6 }, { side: "left", z: -3.525, depth: 3.35 });
   addParapet(3.0, 3.0, 14.95, 1.0);
   addRoofDeck();
   addTerraceInnerParapet();
 
-  trimBox({ x: 3.3, y: 0.16, z: 0.22 }, { x: -2.1, y: 10.35, z: -5.15 }, roofs);
+  trimBox({ x: 3.3, y: 0.16, z: 0.22 }, { x: 2.1, y: 10.35, z: -5.15 }, roofs);
   trimBox({ x: 8.1, y: 0.16, z: 0.22 }, { x: 0, y: 10.35, z: 5.15 }, roofs);
   trimBox({ x: 0.22, y: 0.16, z: 10.75 }, { x: -3.9, y: 10.35, z: 0 }, roofs);
   trimBox({ x: 0.22, y: 0.16, z: 10.75 }, { x: 3.9, y: 10.35, z: 0 }, roofs);
@@ -447,8 +456,8 @@ function buildHouse() {
 
   addWindow(1.6, 4.9, -5.225, 1.42, 1.72, "front");
   addWindow(1.6, 8.05, -5.225, 1.42, 1.72, "front");
-  addWindow(-2.75, 11.2, -5.225, 0.82, 1.62, "front");
-  addWindow(0.005, 11.2, -3.525, 0.82, 1.62, "right");
+  addWindow(2.75, 11.2, -5.225, 0.82, 1.62, "front");
+  addWindow(-0.005, 11.2, -3.525, 0.82, 1.62, "left");
 
   for (const y of [1.65, 4.9, 8.05, 11.2]) {
     addSlimWindowPair(3.775, y, 2.55, "right");
